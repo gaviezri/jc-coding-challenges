@@ -1,61 +1,59 @@
 package count.strategy;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Stream;
 public enum CountStrategyImpl implements CountStrategy{
     BYTE{
         @Override
-        public Long[] count(String path) {
-            Long[] result = new Long[1];
+        public Collection<Long> count(String path) {
             try {
-                result[0] = Files.size(Path.of(path));
+                return List.of( Files.size(Path.of(path)));
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage() + "Doesn't exist or is not a file.");
-                result = null;
+                return null;
             }
-            return result;
         }
     },
     WORD{
         @Override
-        public Long[] count(String path) {
+        public Collection<Long> count(String path) {
             Stream<String> lines = utils.getLines(Path.of(path));
-            Long[] result = new Long[1];
             if (lines != null) {
-                result[0] = lines.flatMap(line -> Stream.of(line.split("\\s+"))).count();
+              return List.of(lines.flatMap(line -> Stream.of(line.split("\\s+"))).count());
             }
-            return result;
+            return null;
         }
     },
     LINE{
         @Override
-        public Long[] count(String path) {
+        public Collection<Long> count(String path) {
             Stream<String> lines = utils.getLines(Path.of(path));
-            Long[] result = new Long[1];
             if (lines != null) {
-                result[0] = lines.count();
+                return List.of(lines.count());
             }
-            return result;
+            return null;
         }
     },
     CHAR{
         @Override
-        public Long[] count(String path) {
+        public Collection<Long> count(String path) {
             Stream<String> lines = utils.getLines(Path.of(path));
-            Long[] result = new Long[1];
             if (lines != null) {
-                result[0] = lines.map(line -> (long) line.length()).reduce(0L, Long::sum);
+               return List.of(lines.map(line -> (long) line.length()).reduce(0L, Long::sum));
             }
-            return result;
+            return null;
         }},
     ALL{
         @Override
-        public Long[] count(String path) {
-            Long[] result = new Long[4];
-            result[0] = CountStrategyImpl.BYTE.count(path)[0];
-            result[1] = CountStrategyImpl.LINE.count(path)[0];
-            result[2] = CountStrategyImpl.WORD.count(path)[0];
-            result[3] = CountStrategyImpl.CHAR.count(path)[0];
+        public Collection<Long>  count(String path) {
+            Collection<Long> result = new LinkedList<>();
+            result.addAll(CountStrategyImpl.BYTE.count(path));
+            result.addAll(CountStrategyImpl.LINE.count(path));
+            result.addAll(CountStrategyImpl.WORD.count(path));
+            result.addAll(CountStrategyImpl.CHAR.count(path));
             return result;
         }
     }
