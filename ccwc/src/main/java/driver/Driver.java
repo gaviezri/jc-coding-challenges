@@ -44,7 +44,7 @@ public class Driver {
                 }
 
             }
-            System.out.println( result == null ? "Error: No result." : "Result: " + Arrays.stream(result).map(Object::toString).reduce("", (a, b) -> a + " " + b));
+            System.out.println( result == null ? "Error: No result." : "Result: " + Arrays.stream(result).map(Object::toString).reduce("", (a, b) -> a + " " + b));;
         }
     }
 }
