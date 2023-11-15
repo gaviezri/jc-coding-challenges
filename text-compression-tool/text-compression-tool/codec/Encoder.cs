@@ -63,8 +63,6 @@ namespace text_compression_tool.codec
 
             private void saveEncoding(Dictionary<char, BitArray> i_codeTable)
             {
-             
-
                 generateHeader(i_codeTable);
                 encodeText(i_codeTable);
             }
@@ -77,7 +75,7 @@ namespace text_compression_tool.codec
             private void generateHeader(Dictionary<char, BitArray> codeTable)
             {
                 //format (binary):
-                //[ASCII][seperator][binary encoding][terminator]
+                //[ASCII 1-byte][length in bits 4-bytes][binary encoding][terminator]
                 //where ASCII is the ascii representation of the character,
                 //seperator will be the ascii code of seperator,
                 //binary encoding will be a sequence of bits representing the character's encoding.
@@ -86,7 +84,8 @@ namespace text_compression_tool.codec
                 foreach (var character in codeTable.Keys)
                 {
                     writer.Write(character);
-                    writer.Write(Codec.seperator);
+                    writer.Write(codeTable[character].Count);
+                    writer.Write()
                     
                 }
             }
